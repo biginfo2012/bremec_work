@@ -1,0 +1,59 @@
+type SensorValue @model (subscriptions: null)
+@auth (
+    rules: [
+        { allow: private, provider: iam},
+        { allow: private, provider: userPools}
+    ]
+) 
+{
+  id: ID!
+  sensorId: String!
+  efficiency: String!
+  status: String!
+  isWarning: Boolean!
+}
+
+type Subscription {
+  onCreateSensorValue(sensorId: String!): SensorValue @aws_subscribe(mutations: ["createSensorValue"])
+}
+
+type Sensor
+{
+  sensorId: String!
+  sensorType: String!
+}
+
+type Query {
+  getSensor(sensorId: String!): Sensor @function(name: "sensorview-get-sensor-${env}")
+}
+
+type SensorDef @model (subscriptions: null)
+@auth (
+    rules: [
+        { allow: private, provider: iam},
+        { allow: private, provider: userPools}
+    ]
+) 
+{
+  id: ID!
+  Email: String!
+  Sensors: [Sensors!] @connection(keyName: "byEmail", fields: ["Email"])
+  CompanyName: String!
+  Test: String!
+}
+
+type Sensors @model (subscriptions: null)
+@auth (
+    rules: [
+        { allow: private, provider: iam},
+        { allow: private, provider: userPools}
+    ]
+)
+@key(name: "byEmail", fields: ["Email"], queryField: "sensorsByEmail")
+{
+  id: ID!
+  Email: String!
+  SensorsId: ID!
+  SensorName: String!
+  SensorFriendlyName: String!
+}

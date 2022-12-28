@@ -1,0 +1,9 @@
+{
+  "host": "a3p1v4z2ckotli-ats.iot.eu-central-1.amazonaws.com",
+  "keyPath": "./certs/sensor-1670767106222-private.pem.key",
+  "certPath": "./certs/sensor-1670767106222-certificate.pem.crt",
+  "caPath": "./certs/AmazonRootCA1.pem",
+  "clientId": "sensor-1670767106222",
+  "certificateArn": "arn:aws:iot:eu-central-1:868660716778:cert/48847c38975e52c0212926ab1eacb8944f63aad1d45747fa436222f39846086c",
+  "sensorId": "sensor-1670766990650"
+}

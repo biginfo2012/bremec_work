@@ -1,0 +1,59 @@
+[
+    {
+      "id": 0,
+      "name": "First Machine",
+      "statistics": [
+        {
+        "id": 0,
+        "name": "Status",
+        "value":"true",
+        "unit":"boolean"
+        },
+        {"id": 1,
+        "name": "efficiency",
+        "value":"92",
+        "unit":"percentage"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "Second Machine",
+      "statistics": [
+        {
+        "id": 0,
+        "name": "Status",
+        "value":"true",
+        "unit":"boolean"
+        },
+        {"id": 1,
+        "name": "Efficiency",
+        "value":"92",
+        "unit":"percentage"
+        },
+        {"id": 2,
+        "name": "Different Stat",
+        "value":"18",
+        "unit":"percentage"
+        }      
+      ]
+    },
+    {
+      "id": 300,
+      "name": "Third Machine",
+      "statistics": [
+        {
+        "id": 0,
+        "name": "Status",
+        "value":"false",
+        "unit":"boolean"
+      },
+        {
+        "id": 1,
+        "name": "efficiency",
+        "value":"82",
+        "unit":"percentage"
+        }
+      ]
+    }
+  ]
