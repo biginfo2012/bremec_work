@@ -89,7 +89,7 @@ export default function Banner(props) {
 						<Flex align='center'>
 							<Icon as={MdOutlineLightbulb} h='16px' w='16px' me='8px'  />
 							<Text fontSize='sm' fontWeight='400' id={sensor.SensorName}>
-								{sensor.SensorFriendlyName}
+								{sensor.SensorName}
 							</Text>
 						</Flex>
 					</MenuItem>

@@ -3,18 +3,12 @@ import {
   Flex,
   Icon,
   Progress,
-  Table,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
   useColorModeValue
 } from '@chakra-ui/react'
 // Custom components
 import Card from 'components/card/Card'
-import { MdCheckCircle, MdCancel, MdOutlineError } from 'react-icons/md'
+import { MdCheckCircle, MdCancel } from 'react-icons/md'
 import Menu from 'components/menu/MainMenu'
 import React, { useEffect, useMemo, useState } from 'react'
 import {
@@ -23,6 +17,11 @@ import {
   useSortBy,
   useTable
 } from 'react-table'
+
+//add datatable
+import DataTable from 'react-data-table-component'
+//add csv export
+import {CSVLink} from 'react-csv'
 
 export default function DevelopmentTable (props) {
   const { columnsData, tableData, sensorList } = props
@@ -41,20 +40,117 @@ export default function DevelopmentTable (props) {
     usePagination
   )
 
+
+  //for add datatable style and columns
+  const columnsDatatable = [
+    {
+      name: "TIMESTAMP",
+      sortable: true,
+      selector: row => row.updatedAt,
+      style: {
+        fontSize: "0.875rem",
+        fontWeight: 700,
+        color: "rgb(27, 37, 89)"
+      }
+    },
+    {
+      name: "STATUS",
+      sortable: true,
+      selector: row => row.status,
+      cell: (row) => (
+          <Flex align='center'>
+            <Icon
+                w='24px'
+                h='24px'
+                me='5px'
+                color={
+                  row.status >0 ? 'green.500' : 'red.500'
+                  // ? 'red.500'
+                  // : cell.value === 'Error'
+                  // ? 'orange.500'
+                  // : null
+                }
+                as={
+                  row.status > 0 ? MdCheckCircle : MdCancel
+                  // : cell.value === 'Error'
+                  // ? MdOutlineError
+                  // : null
+                }
+            />
+            <Text color={textColor} fontSize='sm' fontWeight='700'>
+              {/* {cell.value} */}
+            </Text>
+          </Flex>
+      )
+    },
+    {
+      name: "EFFICIENCY",
+      sortable: true,
+      selector: row => row.efficiency,
+      cell: (row) => (
+        <Flex align='center'>
+          <Text
+              me='10px'
+              color={textColor}
+              fontSize='sm'
+              fontWeight='700'
+          >
+            {Math.trunc(row.efficiency)}%
+          </Text>
+          <Progress
+              variant='table'
+              colorScheme='brandScheme'
+              h='8px'
+              w='63px'
+              value={row.efficiency}
+          />
+        </Flex>
+      )
+    },
+  ]
+  const customStyles = {
+    rows: {
+      style: {
+        minHeight: '57px',
+        borderBottom: "none !important"
+      },
+    },
+    headCells: {
+      style: {
+        color: "rgb(160, 174, 192)",
+        fontWeight: 700,
+        padding: "12px 10px 12px 24px"
+      },
+    },
+    cells: {
+      style: {
+        padding: '16px 24px',
+      },
+    },
+  }
+
+  //get csv data
+  let csvData =[
+    ['TIMESTAMP', 'STATUS', 'EFFICIENCY']
+  ]
+  const [sensorData, setSensorData] = useState(['TIMESTAMP', 'STATUS', 'EFFICIENCY'])
+  useEffect(() => {
+    if(tableData.length > 0){
+      for(let i = 0; i < tableData.length; i++){
+        let itemData = [tableData[i].updatedAt, tableData[i].status, Math.trunc(tableData[i].efficiency) + "%"]
+        csvData[i+1] = itemData
+      }
+      console.log(csvData)
+    }
+    setSensorData(csvData)
+  }, [tableData])
+
   const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    prepareRow,
     initialState
   } = tableInstance
   initialState.pageSize = 12
 
   const textColor = useColorModeValue('secondaryGray.900', 'white')
-  const iconColor = useColorModeValue('secondaryGray.500', 'white')
-  const borderColor = useColorModeValue('gray.200', 'whiteAlpha.100')
-
   const [isMounted, setIsMounted] = useState(false)
  
 
@@ -64,8 +160,6 @@ export default function DevelopmentTable (props) {
   }, [isMounted])
 
   if (!isMounted) return <></>
-
-
 
   return (
     <Card
@@ -83,122 +177,15 @@ export default function DevelopmentTable (props) {
         >
           History / {props.sensorName}
         </Text>
-        {console.log(sensors)}
+        <CSVLink data={sensorData} filename={"History.csv"}>Export CSV</CSVLink>
         <Menu 
           sensorList={sensors}
           handler={props.handler}
         />
       </Flex>
-      <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
-        <Thead>
-          {headerGroups.map((headerGroup, index) => (
-            <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
-              {headerGroup.headers.map((column, index) => (
-                <Th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  pe='10px'
-                  key={index}
-                  borderColor={borderColor}
-                >
-                  <Flex
-                    justify='space-between'
-                    align='center'
-                    fontSize={{ sm: '10px', lg: '12px' }}
-                    color='gray.400'
-                  >
-                    {column.render('Header')}
-                  </Flex>
-                </Th>
-              ))}
-            </Tr>
-          ))}
-        </Thead>
-        <Tbody {...getTableBodyProps()}>
-          {page.map((row, index) => {
-            // console.log(row)
-            prepareRow(row)
-
-            return (
-              <Tr {...row.getRowProps()} key={index}>
-                {row.cells.map((cell, index) => {
-                  // console.log(cell)
-                  let data
-                  if (cell.column.Header === 'SENSOR') {
-                    data = (
-                      <Text color={textColor} fontSize='sm' fontWeight='700'>
-                        {cell.value}
-                      </Text>
-                    )
-                  } else if (cell.column.Header === 'STATUS') {
-                    data = (
-                      <Flex align='center'>
-                        <Icon
-                          w='24px'
-                          h='24px'
-                          me='5px'
-                          color={
-                            cell.value >0 ? 'green.500' : 'red.500'
-                              // ? 'red.500'
-                              // : cell.value === 'Error'
-                              // ? 'orange.500'
-                              // : null
-                          }
-                          as={
-                            cell.value > 0 ? MdCheckCircle : MdCancel
-                              // : cell.value === 'Error'
-                              // ? MdOutlineError
-                              // : null
-                          }
-                        />
-                        <Text color={textColor} fontSize='sm' fontWeight='700'>
-                          {/* {cell.value} */}
-                        </Text>
-                      </Flex>
-                    )
-                  }else if (cell.column.Header === 'TIMESTAMP') {
-                    data = (
-                      <Text color={textColor} fontSize='sm' fontWeight='700'>
-                        {cell.value}
-                      </Text>
-                    )
-                  } else if (cell.column.Header === 'EFFICIENCY') {
-                    data = (
-                      <Flex align='center'>
-                        <Text
-                          me='10px'
-                          color={textColor}
-                          fontSize='sm'
-                          fontWeight='700'
-                        >
-                          {Math.trunc(cell.value)}%
-                        </Text>
-                        <Progress
-                          variant='table'
-                          colorScheme='brandScheme'
-                          h='8px'
-                          w='63px'
-                          value={cell.value}
-                        />
-                      </Flex>
-                    )
-                  }
-                  return (
-                    <Td
-                      {...cell.getCellProps()}
-                      key={index}
-                      fontSize={{ sm: '14px' }}
-                      minW={{ sm: '150px', md: '200px', lg: 'auto' }}
-                      borderColor='transparent'
-                    >
-                      {data}
-                    </Td>
-                  )
-                })}
-              </Tr>
-            )
-          })}
-        </Tbody>
-      </Table>
+      <DataTable
+          columns={columnsDatatable} data={tableData} pagination={true} paginationRowsPerPageOptions={[10, 25, 50, 100]}
+          customStyles={customStyles}></DataTable>
     </Card>
   )
 }
