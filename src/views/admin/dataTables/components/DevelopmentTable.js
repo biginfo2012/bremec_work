@@ -1,5 +1,6 @@
 /* eslint-disable */
 import {
+  Button,
   Flex,
   Icon,
   Progress,
@@ -177,7 +178,10 @@ export default function DevelopmentTable (props) {
         >
           History / {props.sensorName}
         </Text>
-        <CSVLink data={sensorData} filename={"History.csv"}>Export CSV</CSVLink>
+        <Button>
+          <CSVLink data={sensorData} filename={"History.csv"} className="btn btn-primary">Export CSV</CSVLink>
+        </Button>
+
         <Menu 
           sensorList={sensors}
           handler={props.handler}

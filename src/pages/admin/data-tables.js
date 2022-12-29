@@ -112,7 +112,7 @@ export default function DataTables (props) {
     }
 
     //if no sensorData load props.sensorData
-    if(!sensorData.length){
+    if(sensorData != null && !sensorData.length){
         setSensorData(props.sensorData)
     }
 
