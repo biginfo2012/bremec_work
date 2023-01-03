@@ -20,12 +20,34 @@ import {
 } from 'react-table'
 
 //add datatable
-import DataTable from 'react-data-table-component'
+import DataTable, { createTheme } from 'react-data-table-component'
 //add csv export
 import {CSVLink} from 'react-csv'
 
 export default function DevelopmentTable (props) {
   const { columnsData, tableData, sensorList } = props
+  createTheme('dark', {
+    text: {
+      primary: textColor,
+      secondary: textColor,
+    },
+    background: {
+      default: 'transparent',
+    },
+    pagination: {
+      style: {
+        color: textColor
+      },
+      pageButtonsStyle: {
+        color: textColor
+      }
+    },
+    expanderButton: {
+      style: {
+        color: textColor,
+      }
+    }
+  })
 
   const columns = useMemo(() => columnsData, [columnsData])
   const data = useMemo(() => tableData, [tableData])
@@ -41,13 +63,21 @@ export default function DevelopmentTable (props) {
     usePagination
   )
 
-
+  const formatDate = (string) => {
+    let options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    return new Date(string).toLocaleDateString([],options);
+  }
   //for add datatable style and columns
   const columnsDatatable = [
     {
       name: "TIMESTAMP",
       sortable: true,
       selector: row => row.updatedAt,
+      cell: (row) => (
+          <Text color={textColor} fontSize='sm' fontWeight='700'>
+            {formatDate(row.updatedAt)}
+          </Text>
+      ),
       style: {
         fontSize: "0.875rem",
         fontWeight: 700,
@@ -137,7 +167,8 @@ export default function DevelopmentTable (props) {
   const [sensorData, setSensorData] = useState(['TIMESTAMP', 'STATUS', 'EFFICIENCY'])
   useEffect(() => {
     if(tableData.length > 0){
-      for(let i = 0; i < tableData.length; i++){
+      let cnt = tableData.length < 10 ? tableData.length : 10
+      for(let i = 0; i < cnt; i++){
         let itemData = [tableData[i].updatedAt, tableData[i].status, Math.trunc(tableData[i].efficiency) + "%"]
         csvData[i+1] = itemData
       }
@@ -153,7 +184,45 @@ export default function DevelopmentTable (props) {
 
   const textColor = useColorModeValue('secondaryGray.900', 'white')
   const [isMounted, setIsMounted] = useState(false)
- 
+
+  const [perPage, setPerPage] = useState(10)
+  const [page, setPage] = useState(1)
+  const onChangePage = (value) => {
+    setPage(value)
+    csvData =[
+      ['TIMESTAMP', 'STATUS', 'EFFICIENCY']
+    ]
+    console.log(perPage, value)
+    if(tableData.length > 0){
+      let min = (value - 1) * perPage
+      let max = value * perPage
+      let cnt = tableData.length < max ? tableData.length : max
+      for(let i = min; i < cnt; i++){
+        let itemData = [tableData[i].updatedAt, tableData[i].status, Math.trunc(tableData[i].efficiency) + "%"]
+        csvData[i - min + 1] = itemData
+      }
+      console.log(csvData)
+    }
+    setSensorData(csvData)
+  }
+  const onChangeRowsPerPage = (value) => {
+    setPerPage(value)
+    console.log(value, page)
+    csvData =[
+      ['TIMESTAMP', 'STATUS', 'EFFICIENCY']
+    ]
+    if(tableData.length > 0){
+      let min = (page - 1) * value
+      let max = page * value
+      let cnt = tableData.length < max ? tableData.length : max
+      for(let i = min; i < cnt; i++){
+        let itemData = [tableData[i].updatedAt, tableData[i].status, Math.trunc(tableData[i].efficiency) + "%"]
+        csvData[i - min + 1] = itemData
+      }
+      console.log(csvData)
+    }
+    setSensorData(csvData)
+  }
 
   useEffect(() => {
     if (isMounted) return
@@ -178,7 +247,7 @@ export default function DevelopmentTable (props) {
         >
           History / {props.sensorName}
         </Text>
-        <Button>
+        <Button style={{position: "absolute", right: "80px"}}>
           <CSVLink data={sensorData} filename={"History.csv"} className="btn btn-primary">Export CSV</CSVLink>
         </Button>
 
@@ -189,7 +258,7 @@ export default function DevelopmentTable (props) {
       </Flex>
       <DataTable
           columns={columnsDatatable} data={tableData} pagination={true} paginationRowsPerPageOptions={[10, 25, 50, 100]}
-          customStyles={customStyles}></DataTable>
+          customStyles={customStyles} onChangePage={onChangePage} onChangeRowsPerPage={onChangeRowsPerPage} theme="dark"></DataTable>
     </Card>
   )
 }

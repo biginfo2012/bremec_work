@@ -84,7 +84,7 @@ export async function getServerSideProps({req, res}) {
 export default function DataTables (props) {
     const router = useRouter()
     const [sensorData, setSensorData] = useState([])
-    const [sensorName, setSensorName] = useState(props.sensorList != null && props.sensorList.length > 0 ? props.sensorList[0].SensorName : "")
+    const [sensorName, setSensorName] = useState(props.sensorList != null && props.sensorList.length > 0 ? props.sensorList[0].SensorFriendlyName : "")
 
     async function updateSensorData(sensorID){
         let filter = {
@@ -105,9 +105,10 @@ export default function DataTables (props) {
 
     const updateSensor = (e) => {
         let sensorID = e.target.id
+        let SensorFriendlyName = e.target.innerHTML
         updateSensorData(sensorID)
         router.replace(router.asPath)
-        setSensorName(sensorID)
+        setSensorName(SensorFriendlyName)
         return sensorID
     }
 

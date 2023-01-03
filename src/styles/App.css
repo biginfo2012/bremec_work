@@ -5,3 +5,13 @@ body {
 option {
   color: black;
 }
+.cofJRH{
+  fill: rgb(160,174,192) !important;
+}
+.cofJRH:disabled{
+  fill: rgb(160,174,192,.18) !important;
+}
+.jGcUQo{
+  display: inline-flex !important;
+  justify-content: center !important;
+}
