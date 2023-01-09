@@ -21,14 +21,14 @@ import { SidebarResponsive } from 'components/sidebar/Sidebar';
 import PropTypes from 'prop-types';
 // Assets
 import navImage from 'img/layout/Navbar.png';
-import { MdNotificationsNone, MdInfoOutline } from 'react-icons/md';
+// import { MdNotificationsNone, MdInfoOutline } from 'react-icons/md';
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
 import { FaEthereum } from 'react-icons/fa';
 import routes from 'routes';
 import { Image } from 'components/image/Image';
 
-import { Auth } from 'aws-amplify';
-
+import { Auth, API } from 'aws-amplify';
+import {listSensorDefs} from '../../graphql/queries'
 
 async function signOut() {
     try {
@@ -42,9 +42,37 @@ async function getUser(){
 	try {
 		const user = await Auth.currentAuthenticatedUser();
 		const email = user.attributes.email;
-		document.getElementById("companyName").innerHTML = email;
+		
 		document.getElementById("userEmail").innerHTML = '👋&nbsp; Hey, ' + email;
 		
+	} catch (error) {
+		console.log(error)
+	}
+}
+
+async function getUserData(){
+	try {
+		const user = await Auth.currentAuthenticatedUser();
+		let filter = {
+			Email: {
+				eq: user.attributes.email
+			}
+		}
+		const response = await API.graphql({
+			query: listSensorDefs,
+			variables: {
+				limit: 10,
+				filter: filter
+			}
+		});
+		// console.log(response.data.listSensorDefs.items)
+		if (response.data.listSensorDefs) {
+			// console.log(response.data.listSensorDefs.items)
+			const companyName = response.data.listSensorDefs.items[0].CompanyName;	
+			document.getElementById("companyName").innerHTML = companyName;
+		} else {
+			return null;
+		}
 	} catch (error) {
 		console.log(error)
 	}
@@ -70,6 +98,7 @@ export default function HeaderLinks(props) {
 	const borderButton = useColorModeValue('secondaryGray.500', 'whiteAlpha.200');
 
 	getUser();
+	getUserData()
 
 	return (
 		
@@ -224,9 +253,9 @@ export default function HeaderLinks(props) {
 						</Text>
 					</Flex>
 					<Flex flexDirection='column' p='10px'>
-						{/* <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius='8px' px='14px'>
+						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius='8px' px='14px'>
 							<NextLink href="/admin/profile"><Text fontSize='sm'>Profile Settings</Text></NextLink>
-						</MenuItem> */}
+						</MenuItem>
 						<MenuItem
 							_hover={{ bg: 'none' }}
 							_focus={{ bg: 'none' }}

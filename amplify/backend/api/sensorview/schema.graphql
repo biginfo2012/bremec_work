@@ -9,6 +9,7 @@ type SensorValue @model (subscriptions: null)
   id: ID!
   sensorId: String!
   efficiency: String!
+  efficiency2: String
   status: String!
   isWarning: Boolean!
 }
@@ -38,8 +39,19 @@ type SensorDef @model (subscriptions: null)
   id: ID!
   Email: String!
   Sensors: [Sensors!] @connection(keyName: "byEmail", fields: ["Email"])
-  CompanyName: String!
-  Test: String!
+  CompanyName: String
+  PhoneNumber: String
+  RegisteredCountry: String
+  RegisteredCity: String
+  RegisteredAddress: String
+  RegisteredZipCode: String
+  OperativeCountry: String
+  OperativeCity: String
+  OperativeAddress: String
+  OperativeZipCode: String
+  P_IVA: String
+  SDI: String
+  PECEmail: String
 }
 
 type Sensors @model (subscriptions: null)

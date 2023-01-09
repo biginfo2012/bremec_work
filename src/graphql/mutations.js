@@ -10,6 +10,7 @@ export const createSensorValue = /* GraphQL */ `
       id
       sensorId
       efficiency
+      efficiency2
       status
       isWarning
       createdAt
@@ -26,6 +27,7 @@ export const updateSensorValue = /* GraphQL */ `
       id
       sensorId
       efficiency
+      efficiency2
       status
       isWarning
       createdAt
@@ -42,6 +44,7 @@ export const deleteSensorValue = /* GraphQL */ `
       id
       sensorId
       efficiency
+      efficiency2
       status
       isWarning
       createdAt
@@ -58,7 +61,18 @@ export const createSensorDef = /* GraphQL */ `
       id
       Email
       CompanyName
-      Test
+      PhoneNumber
+      RegisteredCountry
+      RegisteredCity
+      RegisteredAddress
+      RegisteredZipCode
+      OperativeCountry
+      OperativeCity
+      OperativeAddress
+      OperativeZipCode
+      P_IVA
+      SDI
+      PECEmail
       createdAt
       updatedAt
       Sensors {
@@ -85,7 +99,18 @@ export const updateSensorDef = /* GraphQL */ `
       id
       Email
       CompanyName
-      Test
+      PhoneNumber
+      RegisteredCountry
+      RegisteredCity
+      RegisteredAddress
+      RegisteredZipCode
+      OperativeCountry
+      OperativeCity
+      OperativeAddress
+      OperativeZipCode
+      P_IVA
+      SDI
+      PECEmail
       createdAt
       updatedAt
       Sensors {
@@ -112,7 +137,18 @@ export const deleteSensorDef = /* GraphQL */ `
       id
       Email
       CompanyName
-      Test
+      PhoneNumber
+      RegisteredCountry
+      RegisteredCity
+      RegisteredAddress
+      RegisteredZipCode
+      OperativeCountry
+      OperativeCity
+      OperativeAddress
+      OperativeZipCode
+      P_IVA
+      SDI
+      PECEmail
       createdAt
       updatedAt
       Sensors {

@@ -15,6 +15,7 @@ export const getSensorValue = /* GraphQL */ `
       id
       sensorId
       efficiency
+      efficiency2
       status
       isWarning
       createdAt
@@ -33,6 +34,7 @@ export const listSensorValues = /* GraphQL */ `
         id
         sensorId
         efficiency
+        efficiency2
         status
         isWarning
         createdAt
@@ -48,7 +50,18 @@ export const getSensorDef = /* GraphQL */ `
       id
       Email
       CompanyName
-      Test
+      PhoneNumber
+      RegisteredCountry
+      RegisteredCity
+      RegisteredAddress
+      RegisteredZipCode
+      OperativeCountry
+      OperativeCity
+      OperativeAddress
+      OperativeZipCode
+      P_IVA
+      SDI
+      PECEmail
       createdAt
       updatedAt
       Sensors {
@@ -77,7 +90,18 @@ export const listSensorDefs = /* GraphQL */ `
         id
         Email
         CompanyName
-        Test
+        PhoneNumber
+        RegisteredCountry
+        RegisteredCity
+        RegisteredAddress
+        RegisteredZipCode
+        OperativeCountry
+        OperativeCity
+        OperativeAddress
+        OperativeZipCode
+        P_IVA
+        SDI
+        PECEmail
         createdAt
         updatedAt
         Sensors {

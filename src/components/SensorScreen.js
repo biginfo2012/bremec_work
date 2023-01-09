@@ -92,7 +92,8 @@ const SensorScreen = (props) => {
     <>
       {console.log(sensorValue)}
           <StatusCard name='Status' value={sensorValue.status} />
-          <EfficiencyCard name='Efficiency' value={sensorValue.efficiency} />
+          <EfficiencyCard name='Efficiency 1' value={sensorValue.efficiency} />
+          {sensorValue.efficiency2 === 'N/A' ? <></> : <EfficiencyCard name='Efficiency 2' value={sensorValue.efficiency2} />}
     </>
   );
 };

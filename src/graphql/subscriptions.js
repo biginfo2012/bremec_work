@@ -7,6 +7,7 @@ export const onCreateSensorValue = /* GraphQL */ `
       id
       sensorId
       efficiency
+      efficiency2
       status
       isWarning
       createdAt

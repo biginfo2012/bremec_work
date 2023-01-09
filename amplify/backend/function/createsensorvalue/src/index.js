@@ -26,16 +26,20 @@ exports.handler = async (event) => {
 
   //determine if the sensor value is a warning based on the value >= 80
   let isWarning = (event.data.Efficiency1) >= 80 ? true: false;
+  let eff2 = (event.data.Efficiency2) >= 0 ? event.data.Efficiency2 : 'N/A';
   
   //create the mutuation input from the sensor event data
   const item = {
     input: {
       sensorId: event.sensorId,
       efficiency: event.data.Efficiency1,
+      efficiency2: eff2,
       status: event.data.Status,
       isWarning: isWarning
     }
   };
+
+  console.log(item);
 
   //execute the mutation
   try {

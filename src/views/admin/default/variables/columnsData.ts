@@ -53,5 +53,5 @@ export type TableData = Column<{
 export type TableProps = {
   columnsData: ColumnData;
   tableData: TableData[];
-  sensorList: string[];
+  // sensorList: string[];
 };

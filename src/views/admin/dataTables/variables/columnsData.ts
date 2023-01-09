@@ -15,8 +15,12 @@ export const columnsDataDevelopment: Columns = [
     accessor: "status",
   },
   {
-    Header: "EFFICIENCY",
+    Header: "EFFICIENCY 1",
     accessor: "efficiency",
+  },
+  {
+    Header: "EFFICIENCY 2",
+    accessor: "efficiency2",
   }
 ];
 
