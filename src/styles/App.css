@@ -5,13 +5,13 @@ body {
 option {
   color: black;
 }
-.cofJRH{
+.rdt_Pagination > div > button{
   fill: rgb(160,174,192) !important;
 }
-.cofJRH:disabled{
+.rdt_Pagination > div > button:disabled{
   fill: rgb(160,174,192,.18) !important;
 }
-.jGcUQo{
+.rdt_Pagination{
   display: inline-flex !important;
   justify-content: center !important;
 }

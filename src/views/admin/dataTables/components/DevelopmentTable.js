@@ -12,12 +12,12 @@ import Card from 'components/card/Card'
 import { MdCheckCircle, MdCancel } from 'react-icons/md'
 import Menu from 'components/menu/MainMenu'
 import React, { useEffect, useMemo, useState } from 'react'
-import {
-  useGlobalFilter,
-  usePagination,
-  useSortBy,
-  useTable
-} from 'react-table'
+// import {
+//   useGlobalFilter,
+//   usePagination,
+//   useSortBy,
+//   useTable
+// } from 'react-table'
 
 //add datatable
 import DataTable, { createTheme } from 'react-data-table-component'
@@ -26,6 +26,7 @@ import {CSVLink} from 'react-csv'
 
 export default function DevelopmentTable (props) {
   const { columnsData, tableData, sensorList } = props
+  const textColor = useColorModeValue('secondaryGray.900', 'white')
   createTheme('dark', {
     text: {
       primary: textColor,
@@ -53,15 +54,23 @@ export default function DevelopmentTable (props) {
   const data = useMemo(() => tableData, [tableData])
   const sensors = useMemo(() => sensorList, [sensorList])
 
-  const tableInstance = useTable(
-    {
-      columns,
-      data
-    },
-    useGlobalFilter,
-    useSortBy,
-    usePagination
-  )
+  // const tableInstance = useTable(
+  //   {
+  //     columns,
+  //     data,
+  //     initialState: {
+  //       sortBy: [
+  //           {
+  //               id: '1',
+  //               desc: true
+  //           }
+  //       ]
+  //     }
+  //   },
+  //   useGlobalFilter,
+  //   useSortBy,
+  //   usePagination
+  // )
 
   const formatDate = (string) => {
     let options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
@@ -70,6 +79,7 @@ export default function DevelopmentTable (props) {
   //for add datatable style and columns
   const columnsDatatable = [
     {
+      id:1,
       name: "TIMESTAMP",
       sortable: true,
       selector: row => row.updatedAt,
@@ -85,6 +95,7 @@ export default function DevelopmentTable (props) {
       }
     },
     {
+      id:2,
       name: "STATUS",
       sortable: true,
       selector: row => row.status,
@@ -115,7 +126,8 @@ export default function DevelopmentTable (props) {
       )
     },
     {
-      name: "EFFICIENCY",
+      id:3,
+      name: "EFFICIENCY 1",
       sortable: true,
       selector: row => row.efficiency,
       cell: (row) => (
@@ -134,6 +146,31 @@ export default function DevelopmentTable (props) {
               h='8px'
               w='63px'
               value={row.efficiency}
+          />
+        </Flex>
+      )
+    },
+    {
+      id:4,
+      name: "EFFICIENCY 2",
+      sortable: true,
+      selector: row => row.efficiency2,
+      cell: (row) => (
+        <Flex align='center'>
+          <Text
+              me='10px'
+              color={textColor}
+              fontSize='sm'
+              fontWeight='700'
+          >
+            {(row.efficiency2) !=="N/A" ? Math.trunc(row.efficiency2) : 0}%
+          </Text>
+          <Progress
+              variant='table'
+              colorScheme='brandScheme'
+              h='8px'
+              w='63px'
+              value={(row.efficiency2) !=="N/A" ? Math.trunc(row.efficiency2) : 0}
           />
         </Flex>
       )
@@ -162,67 +199,81 @@ export default function DevelopmentTable (props) {
 
   //get csv data
   let csvData =[
-    ['TIMESTAMP', 'STATUS', 'EFFICIENCY']
+    ['TIMESTAMP', 'STATUS', 'EFFICIENCY1', 'EFFICIENCY2']
   ]
-  const [sensorData, setSensorData] = useState(['TIMESTAMP', 'STATUS', 'EFFICIENCY'])
+  const [sensorData, setSensorData] = useState(['TIMESTAMP', 'STATUS', 'EFFICIENCY1', 'EFFICIENCY2'])
   useEffect(() => {
     if(tableData.length > 0){
-      let cnt = tableData.length < 10 ? tableData.length : 10
+      tableData.sort((a,b) => (a.updatedAt < b.updatedAt) ? 1 : ((b.updatedAt < a.updatedAt) ? -1 : 0))
+      //let cnt = tableData.length < 10 ? tableData.length : 10
+      let cnt = tableData.length
       for(let i = 0; i < cnt; i++){
-        let itemData = [tableData[i].updatedAt, tableData[i].status, Math.trunc(tableData[i].efficiency) + "%"]
+        let itemData = [tableData[i].updatedAt, tableData[i].status, Math.trunc(tableData[i].efficiency) + "%", Math.trunc(tableData[i].efficiency2) + "%"]
         csvData[i+1] = itemData
       }
-      console.log(csvData)
     }
     setSensorData(csvData)
   }, [tableData])
 
-  const {
-    initialState
-  } = tableInstance
-  initialState.pageSize = 12
 
-  const textColor = useColorModeValue('secondaryGray.900', 'white')
+  // const {
+  //   initialState
+  // } = tableInstance
+  // initialState.pageSize = 12
+
   const [isMounted, setIsMounted] = useState(false)
 
-  const [perPage, setPerPage] = useState(10)
-  const [page, setPage] = useState(1)
-  const onChangePage = (value) => {
-    setPage(value)
+  const onSort = (selectedColumn, sortDirection, sortedRows) => {
     csvData =[
-      ['TIMESTAMP', 'STATUS', 'EFFICIENCY']
+      ['TIMESTAMP', 'STATUS', 'EFFICIENCY1', 'EFFICIENCY2']
     ]
-    console.log(perPage, value)
-    if(tableData.length > 0){
-      let min = (value - 1) * perPage
-      let max = value * perPage
-      let cnt = tableData.length < max ? tableData.length : max
-      for(let i = min; i < cnt; i++){
-        let itemData = [tableData[i].updatedAt, tableData[i].status, Math.trunc(tableData[i].efficiency) + "%"]
-        csvData[i - min + 1] = itemData
+    if(sortedRows.length > 0){
+      let cnt = sortedRows.length
+      for(let i = 0; i < cnt; i++){
+        let itemData = [sortedRows[i].updatedAt, sortedRows[i].status, Math.trunc(sortedRows[i].efficiency) + "%", Math.trunc(sortedRows[i].efficiency2) + "%"]
+        csvData[i+1] = itemData
       }
-      console.log(csvData)
     }
     setSensorData(csvData)
   }
-  const onChangeRowsPerPage = (value) => {
-    setPerPage(value)
-    console.log(value, page)
-    csvData =[
-      ['TIMESTAMP', 'STATUS', 'EFFICIENCY']
-    ]
-    if(tableData.length > 0){
-      let min = (page - 1) * value
-      let max = page * value
-      let cnt = tableData.length < max ? tableData.length : max
-      for(let i = min; i < cnt; i++){
-        let itemData = [tableData[i].updatedAt, tableData[i].status, Math.trunc(tableData[i].efficiency) + "%"]
-        csvData[i - min + 1] = itemData
-      }
-      console.log(csvData)
-    }
-    setSensorData(csvData)
-  }
+  // const [perPage, setPerPage] = useState(10)
+  // const [page, setPage] = useState(1)
+  // const onChangePage = (value) => {
+  //   setPage(value)
+  //   csvData =[
+  //     ['TIMESTAMP', 'STATUS', 'EFFICIENCY']
+  //   ]
+  //   console.log(perPage, value)
+  //   if(tableData.length > 0){
+  //     let min = (value - 1) * perPage
+  //     let max = value * perPage
+  //     let cnt = tableData.length < max ? tableData.length : max
+  //     for(let i = min; i < cnt; i++){
+  //       let itemData = [tableData[i].updatedAt, tableData[i].status, Math.trunc(tableData[i].efficiency) + "%"]
+  //       csvData[i - min + 1] = itemData
+  //     }
+  //     console.log(csvData)
+  //   }
+  //   setSensorData(csvData)
+  // }
+  // const onChangeRowsPerPage = (value) => {
+  //   setPerPage(value)
+  //   console.log(value, page)
+  //   csvData =[
+  //     ['TIMESTAMP', 'STATUS', 'EFFICIENCY']
+  //   ]
+  //   if(tableData.length > 0){
+  //     let min = (page - 1) * value
+  //     let max = page * value
+  //     let cnt = tableData.length < max ? tableData.length : max
+  //     for(let i = min; i < cnt; i++){
+  //       let itemData = [tableData[i].updatedAt, tableData[i].status, Math.trunc(tableData[i].efficiency) + "%"]
+  //       csvData[i - min + 1] = itemData
+  //     }
+  //     console.log(csvData)
+  //   }
+  //   setSensorData(csvData)
+  // }
 
   useEffect(() => {
     if (isMounted) return
@@ -258,7 +309,7 @@ export default function DevelopmentTable (props) {
       </Flex>
       <DataTable
           columns={columnsDatatable} data={tableData} pagination={true} paginationRowsPerPageOptions={[10, 25, 50, 100]}
-          customStyles={customStyles} onChangePage={onChangePage} onChangeRowsPerPage={onChangeRowsPerPage} theme="dark"></DataTable>
+          customStyles={customStyles} theme="dark" defaultSortFieldId={1} defaultSortAsc={false} onSort={onSort}></DataTable>
     </Card>
   )
 }

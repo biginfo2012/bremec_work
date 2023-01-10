@@ -2,10 +2,8 @@ import { Box, SimpleGrid } from '@chakra-ui/react'
 import DevelopmentTable from 'views/admin/dataTables/components/DevelopmentTable'
 import { API } from 'aws-amplify'
 import { columnsDataDevelopment } from 'views/admin/dataTables/variables/columnsData'
-import tableDataDevelopment from 'views/admin/dataTables/variables/tableDataDevelopment.json'
 import React, { useState } from 'react'
 import AdminLayout from 'layouts/admin'
-import { TableData } from 'views/admin/default/variables/columnsData'
 import { Amplify, withSSRContext } from 'aws-amplify'
 import {listSensorValues, sensorsByEmail} from '../../graphql/queries'
 import { useRouter } from 'next/router'
@@ -45,16 +43,10 @@ export async function getServerSideProps({req, res}) {
             })
         }
 
-        // List of all sensor values for a specific sensor ID
-        // const response = await API.graphql({
-        //     query: listSensorValues,
-        //     limit: 2,
-        // })
 
         if (response.data.listSensorValues && responseSensors.data.sensorsByEmail) {
             const SensorData = response.data.listSensorValues.items
             const SensorList = responseSensors.data.sensorsByEmail.items
-
             return {
                 props: {
                     sensorData: SensorData,
