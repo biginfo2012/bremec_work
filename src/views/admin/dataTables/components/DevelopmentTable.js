@@ -208,7 +208,7 @@ export default function DevelopmentTable (props) {
       //let cnt = tableData.length < 10 ? tableData.length : 10
       let cnt = tableData.length
       for(let i = 0; i < cnt; i++){
-        let itemData = [tableData[i].updatedAt, tableData[i].status, Math.trunc(tableData[i].efficiency) + "%", Math.trunc(tableData[i].efficiency2) + "%"]
+        let itemData = [formatDate(tableData[i].updatedAt), tableData[i].status, Math.trunc(tableData[i].efficiency) + "%", Math.trunc(tableData[i].efficiency2) + "%"]
         csvData[i+1] = itemData
       }
     }
@@ -230,7 +230,7 @@ export default function DevelopmentTable (props) {
     if(sortedRows.length > 0){
       let cnt = sortedRows.length
       for(let i = 0; i < cnt; i++){
-        let itemData = [sortedRows[i].updatedAt, sortedRows[i].status, Math.trunc(sortedRows[i].efficiency) + "%", Math.trunc(sortedRows[i].efficiency2) + "%"]
+        let itemData = [formatDate(sortedRows[i].updatedAt), sortedRows[i].status, Math.trunc(sortedRows[i].efficiency) + "%", Math.trunc(sortedRows[i].efficiency2) + "%"]
         csvData[i+1] = itemData
       }
     }
